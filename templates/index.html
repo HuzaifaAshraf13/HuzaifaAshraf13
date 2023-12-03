@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>News App</title>
+</head>
+<body>
+    <div class="container">
+        <h1>News App</h1>
+
+        <form id="newsForm">
+            <label for="category">Select a category:</label>
+            <select id="category" name="category">
+                <option value="general">General</option>
+                <option value="business">Business</option>
+                <option value="entertainment">Entertainment</option>
+                <option value="health">Health</option>
+                <option value="science">Science</option>
+                <option value="sports">Sports</option>
+                <option value="technology">Technology</option>
+            </select>
+
+            <label for="numArticles">Number of articles:</label>
+            <input type="number" id="numArticles" name="numArticles" value="5" min="1" max="10">
+
+            <button type="button" onclick="getNews()">Get News</button>
+        </form>
+
+        <div id="newsContainer"></div>
+    </div>
+
+    <script>
+        function getNews() {
+            const category = document.getElementById('category').value;
+            const numArticles = document.getElementById('numArticles').value;
+
+            fetch(`/get_news?category=${category}&num_articles=${numArticles}`)
+                .then(response => response.json())
+                .then(newsData => displayNews(newsData))
+                .catch(error => console.error('Error fetching news:', error));
+        }
+
+        function displayNews(newsData) {
+            const newsContainer = document.getElementById('newsContainer');
+            newsContainer.innerHTML = '';
+
+            if (newsData.length === 0) {
+                newsContainer.innerHTML = '<p>No news available.</p>';
+                return;
+            }
+
+            for (const article of newsData) {
+                const articleElement = document.createElement('div');
+                articleElement.classList.add('article');
+
+                const titleElement = document.createElement('h2');
+                titleElement.textContent = article.title;
+
+                const sourceElement = document.createElement('p');
+                sourceElement.textContent = `Source: ${article.source.name}`;
+
+                const urlElement = document.createElement('a');
+                urlElement.href = article.url;
+                urlElement.textContent = 'Read more';
+
+                articleElement.appendChild(titleElement);
+                articleElement.appendChild(sourceElement);
+                articleElement.appendChild(urlElement);
+
+                newsContainer.appendChild(articleElement);
+            }
+        }
+    </script>
+</body>
+</html>
