@@ -41,7 +41,7 @@ def index():
 
 @app.route('/get_news', methods=['GET'])
 def fetch_news():
-    api_key = '3836096af74d47e3991542f31432d5c1'
+    api_key = 'WRITE YOUR API KEY HERE '
     country = request.args.get('country', 'us')
     category = request.args.get('category', 'general')
     num_articles = int(request.args.get('num_articles', 5))
